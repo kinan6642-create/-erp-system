@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block page_title %}حركة المخزون{% endblock %}
+{% block content %}
+<div class="card-box">
+  <table class="table table-hover table-sm">
+    <thead><tr><th>التاريخ</th><th>الصنف</th><th>المستودع</th><th>النوع</th><th>الكمية</th><th>تكلفة الوحدة</th><th>المصدر</th><th>ملاحظات</th></tr></thead>
+    <tbody>
+    {% for m in rows %}
+      <tr>
+        <td>{{ m.created_at }}</td>
+        <td>{{ m.item_name }}</td>
+        <td>{{ m.warehouse_name }}</td>
+        <td>
+          {% if m.move_type == 'in' %}<span class="badge bg-success">وارد</span>
+          {% else %}<span class="badge bg-danger">صادر</span>{% endif %}
+        </td>
+        <td>{{ m.quantity }}</td>
+        <td>{{ '%.2f'|format(m.unit_cost) }}</td>
+        <td class="small text-muted">{{ m.ref_type or '-' }}</td>
+        <td class="small">{{ m.notes or '-' }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="8" class="text-center text-muted">لا توجد حركات مخزون بعد</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
