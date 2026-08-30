@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block page_title %}العملات{% endblock %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card-box">
+      <h6 class="fw-bold">إضافة عملة</h6>
+      <form method="POST">
+        <div class="mb-2"><input class="form-control" name="code" placeholder="الرمز مثل USD" required></div>
+        <div class="mb-2"><input class="form-control" name="name" placeholder="اسم العملة" required></div>
+        <div class="mb-2"><input class="form-control" type="number" step="0.0001" name="rate" placeholder="سعر الصرف" required></div>
+        <button class="btn btn-primary w-100">إضافة</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card-box">
+      <table class="table">
+        <thead><tr><th>الرمز</th><th>الاسم</th><th>سعر الصرف</th><th>أساسية</th></tr></thead>
+        <tbody>
+        {% for c in items %}
+          <tr><td>{{ c.code }}</td><td>{{ c.name }}</td><td>{{ c.rate }}</td>
+          <td>{% if c.is_base %}<span class="badge bg-primary">نعم</span>{% endif %}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
