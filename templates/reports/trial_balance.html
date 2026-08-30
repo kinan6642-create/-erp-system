@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block page_title %}ميزان المراجعة{% endblock %}
+{% block content %}
+<div class="card-box">
+  <table class="table">
+    <thead><tr><th>الكود</th><th>اسم الحساب</th><th>مدين</th><th>دائن</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.code }}</td><td>{{ r.name }}</td>
+        <td>{{ '%.2f'|format(r.debit) if r.debit else '' }}</td>
+        <td>{{ '%.2f'|format(r.credit) if r.credit else '' }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4" class="text-center text-muted">لا توجد بيانات بعد</td></tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr class="table-light fw-bold">
+        <td colspan="2" class="text-end">الإجمالي</td>
+        <td>{{ '%.2f'|format(total_debit) }}</td>
+        <td>{{ '%.2f'|format(total_credit) }}</td>
+      </tr>
+    </tfoot>
+  </table>
+  {% if total_debit == total_credit %}
+    <div class="alert alert-success mt-2 mb-0"><i class="bi bi-check-circle"></i> الميزان متوازن</div>
+  {% else %}
+    <div class="alert alert-danger mt-2 mb-0"><i class="bi bi-exclamation-triangle"></i> الميزان غير متوازن</div>
+  {% endif %}
+</div>
+{% endblock %}
