@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block page_title %}قائمة الدخل (الأرباح والخسائر){% endblock %}
+{% block content %}
+<div class="card-box mb-3">
+  <form method="GET" class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label small">من تاريخ</label>
+      <input class="form-control" type="date" name="from" value="{{ date_from }}">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small">إلى تاريخ</label>
+      <input class="form-control" type="date" name="to" value="{{ date_to }}">
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100">تطبيق</button>
+    </div>
+  </form>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card-box">
+      <h6 class="fw-bold text-success mb-2">الإيرادات</h6>
+      <table class="table table-sm">
+        {% for r in revenue_rows %}
+          <tr><td>{{ r.name }}</td><td class="text-end">{{ '%.2f'|format(r.amount) }}</td></tr>
+        {% else %}
+          <tr><td colspan="2" class="text-center text-muted">لا توجد إيرادات في هذه الفترة</td></tr>
+        {% endfor %}
+        <tr class="fw-bold table-light"><td>إجمالي الإيرادات</td><td class="text-end">{{ '%.2f'|format(total_revenue) }}</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card-box">
+      <h6 class="fw-bold text-danger mb-2">المصروفات</h6>
+      <table class="table table-sm">
+        {% for r in expense_rows %}
+          <tr><td>{{ r.name }}</td><td class="text-end">{{ '%.2f'|format(r.amount) }}</td></tr>
+        {% else %}
+          <tr><td colspan="2" class="text-center text-muted">لا توجد مصروفات في هذه الفترة</td></tr>
+        {% endfor %}
+        <tr class="fw-bold table-light"><td>إجمالي المصروفات</td><td class="text-end">{{ '%.2f'|format(total_expense) }}</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="card-box mt-3 text-center">
+  <div class="text-muted small">صافي الربح / الخسارة للفترة</div>
+  <div class="fs-3 fw-bold {% if net_profit >= 0 %}text-success{% else %}text-danger{% endif %}">{{ '%.2f'|format(net_profit) }}</div>
+</div>
+{% endblock %}
