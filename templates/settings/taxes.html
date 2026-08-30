@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block page_title %}الضرائب{% endblock %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card-box">
+      <h6 class="fw-bold">إضافة ضريبة</h6>
+      <form method="POST">
+        <div class="mb-2"><input class="form-control" name="name" placeholder="اسم الضريبة (مثال: ضريبة القيمة المضافة)" required></div>
+        <div class="mb-2"><input class="form-control" type="number" step="0.01" name="rate" placeholder="النسبة %" required></div>
+        <button class="btn btn-primary w-100">إضافة</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card-box">
+      <table class="table">
+        <thead><tr><th>الاسم</th><th>النسبة</th></tr></thead>
+        <tbody>
+        {% for t in items %}
+          <tr><td>{{ t.name }}</td><td>{{ t.rate }}%</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
