@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block page_title %}سجل التدقيق{% endblock %}
+{% block content %}
+<div class="card-box">
+  <table class="table table-sm table-hover">
+    <thead><tr><th>الوقت</th><th>المستخدم</th><th>العملية</th><th>الجدول</th><th>رقم السجل</th><th>تفاصيل</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td class="small">{{ r.created_at }}</td>
+        <td>{{ r.username or '-' }}</td>
+        <td>
+          {% if r.action == 'ADD' %}<span class="badge bg-success">إضافة</span>
+          {% elif r.action == 'EDIT' %}<span class="badge bg-warning text-dark">تعديل</span>
+          {% elif r.action == 'DELETE' %}<span class="badge bg-danger">حذف</span>
+          {% else %}<span class="badge bg-secondary">{{ r.action }}</span>{% endif %}
+        </td>
+        <td>{{ r.table_name or '-' }}</td>
+        <td>{{ r.record_id or '-' }}</td>
+        <td class="small text-muted">{{ r.details or '-' }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6" class="text-center text-muted">لا توجد سجلات تدقيق بعد</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
