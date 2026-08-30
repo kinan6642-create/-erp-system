@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block page_title %}بيانات الشركة{% endblock %}
+{% block content %}
+<div class="card-box" style="max-width:600px">
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label">اسم الشركة</label>
+      <input type="text" name="name" class="form-control" value="{{ company.name if company else '' }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">العنوان</label>
+      <input type="text" name="address" class="form-control" value="{{ company.address if company else '' }}">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">الهاتف</label>
+      <input type="text" name="phone" class="form-control" value="{{ company.phone if company else '' }}">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">الرقم الضريبي</label>
+      <input type="text" name="tax_number" class="form-control" value="{{ company.tax_number if company else '' }}">
+    </div>
+    <button class="btn btn-primary">حفظ</button>
+  </form>
+</div>
+{% endblock %}
