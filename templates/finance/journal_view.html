@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block page_title %}قيد رقم {{ entry.number }}{% endblock %}
+{% block content %}
+<div class="card-box mb-3">
+  <div class="row">
+    <div class="col-md-3"><span class="text-muted small">الرقم</span><div class="fw-bold">{{ entry.number }}</div></div>
+    <div class="col-md-3"><span class="text-muted small">التاريخ</span><div class="fw-bold">{{ entry.date }}</div></div>
+    <div class="col-md-6"><span class="text-muted small">البيان</span><div class="fw-bold">{{ entry.description }}</div></div>
+  </div>
+</div>
+<div class="card-box">
+  <table class="table">
+    <thead><tr><th>الحساب</th><th>مدين</th><th>دائن</th></tr></thead>
+    <tbody>
+    {% set ns = namespace(td=0, tc=0) %}
+    {% for l in lines %}
+      <tr>
+        <td>{{ l.code }} - {{ l.name }}</td>
+        <td>{{ '%.2f'|format(l.debit) if l.debit else '' }}</td>
+        <td>{{ '%.2f'|format(l.credit) if l.credit else '' }}</td>
+      </tr>
+      {% set ns.td = ns.td + l.debit %}
+      {% set ns.tc = ns.tc + l.credit %}
+    {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr class="table-light fw-bold">
+        <td class="text-end">الإجمالي</td>
+        <td>{{ '%.2f'|format(ns.td) }}</td>
+        <td>{{ '%.2f'|format(ns.tc) }}</td>
+      </tr>
+    </tfoot>
+  </table>
+  <a href="{{ url_for('finance.journal') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-right"></i> رجوع للقيود</a>
+</div>
+{% endblock %}
