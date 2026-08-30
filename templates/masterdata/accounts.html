@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block page_title %}الدليل المحاسبي{% endblock %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card-box">
+      <h6 class="fw-bold">إضافة حساب</h6>
+      <form method="POST">
+        <div class="mb-2"><input class="form-control" name="code" placeholder="كود الحساب" required></div>
+        <div class="mb-2"><input class="form-control" name="name" placeholder="اسم الحساب" required></div>
+        <div class="mb-2">
+          <select class="form-select" name="type" required>
+            <option value="">نوع الحساب</option>
+            <option value="asset">أصول</option>
+            <option value="liability">خصوم</option>
+            <option value="equity">حقوق ملكية</option>
+            <option value="revenue">إيرادات</option>
+            <option value="expense">مصروفات</option>
+          </select>
+        </div>
+        <div class="mb-2">
+          <select class="form-select" name="parent_id">
+            <option value="">بدون حساب رئيسي</option>
+            {% for p in parents %}
+              <option value="{{ p.id }}">{{ p.code }} - {{ p.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button class="btn btn-primary w-100">إضافة</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card-box">
+      <table class="table table-sm">
+        <thead><tr><th>الكود</th><th>الاسم</th><th>النوع</th><th>الحساب الرئيسي</th><th>الرصيد</th><th>عرض</th></tr></thead>
+        <tbody>
+        {% for a in items %}
+          <tr class="{% if a.is_control %}fw-bold table-light{% endif %}">
+            <td>{{ a.code }}</td>
+            <td>{{ a.name }}</td>
+            <td>
+              {% if a.type == 'asset' %}أصول{% elif a.type == 'liability' %}خصوم
+              {% elif a.type == 'equity' %}حقوق ملكية{% elif a.type == 'revenue' %}إيرادات
+              {% else %}مصروفات{% endif %}
+            </td>
+            <td>{{ a.parent_name or '-' }}</td>
+            <td class="{% if a.balance and a.balance < 0 %}text-danger{% endif %}">{{ '%.2f'|format(a.balance or 0) }}</td>
+            <td>
+              {% if not a.is_control %}
+              <a href="{{ url_for('finance.ledger', account_id=a.id) }}" class="btn btn-sm btn-outline-primary">دفتر الأستاذ</a>
+              {% endif %}
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="6" class="text-center text-muted">لا توجد حسابات</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
