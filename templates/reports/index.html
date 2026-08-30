@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block page_title %}مركز التقارير{% endblock %}
+{% block content %}
+<div class="row g-3">
+  {% set reports = [
+    ('reports.trial_balance', 'bi-journal-check', 'ميزان المراجعة'),
+    ('reports.income_statement', 'bi-graph-up-arrow', 'قائمة الدخل (الأرباح والخسائر)'),
+    ('reports.balance_sheet', 'bi-bank', 'الميزانية العمومية'),
+    ('reports.cash_flow', 'bi-cash-coin', 'التدفقات النقدية'),
+    ('reports.sales_report', 'bi-receipt', 'تقرير المبيعات'),
+    ('reports.purchases_report', 'bi-cart', 'تقرير المشتريات'),
+    ('reports.inventory_valuation', 'bi-boxes', 'تقييم المخزون'),
+    ('reports.customers_debts', 'bi-people', 'ديون العملاء'),
+    ('reports.suppliers_debts', 'bi-truck', 'ديون الموردين'),
+    ('reports.audit_log', 'bi-shield-check', 'سجل التدقيق'),
+  ] %}
+  {% for endpoint, icon, title in reports %}
+  <div class="col-md-4">
+    <a href="{{ url_for(endpoint) }}" class="text-decoration-none">
+      <div class="card-box h-100 text-center py-4">
+        <i class="bi {{ icon }} fs-1 text-primary"></i>
+        <div class="fw-bold mt-2 text-dark">{{ title }}</div>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
