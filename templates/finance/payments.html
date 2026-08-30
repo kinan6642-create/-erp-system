@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block page_title %}سندات الصرف{% endblock %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card-box">
+      <h6 class="fw-bold mb-3">سند صرف جديد</h6>
+      <form method="POST">
+        <div class="mb-2">
+          <label class="form-label small">التاريخ</label>
+          <input class="form-control" type="date" name="date" value="{{ today }}" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small">المورد</label>
+          <select class="form-select" name="supplier_id" required>
+            {% for s in suppliers %}
+              <option value="{{ s.id }}">{{ s.name }} ({{ '%.2f'|format(s.opening_balance) }})</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small">المبلغ</label>
+          <input class="form-control" type="number" step="0.01" name="amount" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small">طريقة الصرف</label>
+          <select class="form-select" name="method" required>
+            <option value="cash">صندوق</option>
+            <option value="bank">بنك</option>
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small">ملاحظات</label>
+          <textarea class="form-control" name="notes" rows="2"></textarea>
+        </div>
+        <button class="btn btn-primary w-100">حفظ السند</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card-box">
+      <h6 class="fw-bold mb-2">آخر سندات الصرف</h6>
+      <table class="table table-sm">
+        <thead><tr><th>الرقم</th><th>التاريخ</th><th>المورد</th><th>المبلغ</th><th>الطريقة</th></tr></thead>
+        <tbody>
+        {% for h in history %}
+          <tr>
+            <td>{{ h.number }}</td><td>{{ h.date }}</td><td>{{ h.supplier_name }}</td>
+            <td class="text-danger fw-bold">{{ '%.2f'|format(h.amount) }}</td>
+            <td>{{ 'صندوق' if h.method=='cash' else 'بنك' }}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" class="text-center text-muted">لا توجد سندات بعد</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
