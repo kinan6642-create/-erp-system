@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}نظام إدارة الأعمال{% endblock %}</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+{% if session.user_id %}
+<div class="d-flex">
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <i class="bi bi-building"></i> نظام الأعمال المتكامل
+    </div>
+    <div class="sidebar-user">
+      <i class="bi bi-person-circle"></i> {{ session.full_name or session.username }}
+      <div class="small text-muted">{{ session.role_name }}</div>
+    </div>
+    <ul class="nav flex-column sidebar-nav">
+      <li><a href="{{ url_for('dashboard.index') }}"><i class="bi bi-speedometer2"></i> لوحة التحكم</a></li>
+
+      <li class="nav-section">البيانات الأساسية</li>
+      <li><a href="{{ url_for('masterdata.customers') }}"><i class="bi bi-people"></i> العملاء</a></li>
+      <li><a href="{{ url_for('masterdata.suppliers') }}"><i class="bi bi-truck"></i> الموردون</a></li>
+      <li><a href="{{ url_for('masterdata.items') }}"><i class="bi bi-box-seam"></i> الأصناف</a></li>
+      <li><a href="{{ url_for('masterdata.services') }}"><i class="bi bi-tools"></i> الخدمات</a></li>
+      <li><a href="{{ url_for('masterdata.categories') }}"><i class="bi bi-tags"></i> التصنيفات</a></li>
+      <li><a href="{{ url_for('masterdata.units') }}"><i class="bi bi-rulers"></i> الوحدات</a></li>
+      <li><a href="{{ url_for('masterdata.cost_centers') }}"><i class="bi bi-diagram-3"></i> مراكز التكلفة</a></li>
+      <li><a href="{{ url_for('masterdata.accounts') }}"><i class="bi bi-journal-text"></i> الدليل المحاسبي</a></li>
+
+      <li class="nav-section">المبيعات</li>
+      <li><a href="{{ url_for('sales.invoices') }}"><i class="bi bi-receipt"></i> فواتير البيع</a></li>
+      <li><a href="{{ url_for('sales.new_invoice') }}"><i class="bi bi-plus-circle"></i> فاتورة بيع جديدة</a></li>
+      <li><a href="{{ url_for('sales.returns') }}"><i class="bi bi-arrow-return-left"></i> مرتجع المبيعات</a></li>
+
+      <li class="nav-section">المشتريات</li>
+      <li><a href="{{ url_for('purchases.invoices') }}"><i class="bi bi-cart"></i> فواتير الشراء</a></li>
+      <li><a href="{{ url_for('purchases.new_invoice') }}"><i class="bi bi-plus-circle"></i> فاتورة شراء جديدة</a></li>
+      <li><a href="{{ url_for('purchases.returns') }}"><i class="bi bi-arrow-return-right"></i> مرتجع المشتريات</a></li>
+
+      <li class="nav-section">المخزون</li>
+      <li><a href="{{ url_for('inventory.stock') }}"><i class="bi bi-boxes"></i> أرصدة المخزون</a></li>
+      <li><a href="{{ url_for('inventory.moves') }}"><i class="bi bi-arrow-left-right"></i> حركة المخزون</a></li>
+      <li><a href="{{ url_for('inventory.adjustments') }}"><i class="bi bi-clipboard-check"></i> جرد وتسوية</a></li>
+      <li><a href="{{ url_for('inventory.transfers') }}"><i class="bi bi-truck-flatbed"></i> تحويل مخزون</a></li>
+      <li><a href="{{ url_for('inventory.low_stock') }}"><i class="bi bi-exclamation-triangle"></i> تنبيهات النقص</a></li>
+
+      <li class="nav-section">الإنتاج</li>
+      <li><a href="{{ url_for('production.orders') }}"><i class="bi bi-gear"></i> أوامر الإنتاج</a></li>
+      <li><a href="{{ url_for('production.new_order') }}"><i class="bi bi-plus-circle"></i> أمر إنتاج جديد</a></li>
+
+      <li class="nav-section">المالية</li>
+      <li><a href="{{ url_for('finance.receipts') }}"><i class="bi bi-cash-coin"></i> سندات القبض</a></li>
+      <li><a href="{{ url_for('finance.payments') }}"><i class="bi bi-cash-stack"></i> سندات الصرف</a></li>
+      <li><a href="{{ url_for('finance.expenses') }}"><i class="bi bi-wallet2"></i> المصاريف</a></li>
+      <li><a href="{{ url_for('finance.revenues') }}"><i class="bi bi-graph-up-arrow"></i> إيرادات أخرى</a></li>
+      <li><a href="{{ url_for('finance.bank_transfers') }}"><i class="bi bi-bank"></i> تحويل صندوق/بنك</a></li>
+      <li><a href="{{ url_for('finance.journal') }}"><i class="bi bi-journal-bookmark"></i> القيود اليومية</a></li>
+
+      <li class="nav-section">التقارير</li>
+      <li><a href="{{ url_for('reports.index') }}"><i class="bi bi-bar-chart"></i> جميع التقارير</a></li>
+
+      <li class="nav-section">الإعدادات</li>
+      <li><a href="{{ url_for('settings.company') }}"><i class="bi bi-building-gear"></i> الشركة</a></li>
+      <li><a href="{{ url_for('settings.branches') }}"><i class="bi bi-diagram-2"></i> الفروع</a></li>
+      <li><a href="{{ url_for('settings.warehouses') }}"><i class="bi bi-house-gear"></i> المستودعات</a></li>
+      <li><a href="{{ url_for('settings.users') }}"><i class="bi bi-person-badge"></i> المستخدمون</a></li>
+      <li><a href="{{ url_for('settings.roles') }}"><i class="bi bi-shield-lock"></i> الأدوار والصلاحيات</a></li>
+      <li><a href="{{ url_for('settings.fiscal_years') }}"><i class="bi bi-calendar-range"></i> السنوات المالية</a></li>
+      <li><a href="{{ url_for('settings.currencies') }}"><i class="bi bi-currency-exchange"></i> العملات</a></li>
+      <li><a href="{{ url_for('settings.taxes') }}"><i class="bi bi-percent"></i> الضرائب</a></li>
+
+      <li class="nav-section"></li>
+      <li><a href="{{ url_for('auth.logout') }}" class="text-danger"><i class="bi bi-box-arrow-right"></i> تسجيل الخروج</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <div class="topbar">
+      <button class="btn btn-sm btn-outline-secondary d-md-none" onclick="document.querySelector('.sidebar').classList.toggle('show')">
+        <i class="bi bi-list"></i>
+      </button>
+      <span class="fw-bold">{% block page_title %}{% endblock %}</span>
+    </div>
+    <div class="content-body">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</div>
+{% else %}
+  {% block auth_content %}{% endblock %}
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
