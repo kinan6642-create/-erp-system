@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block page_title %}المستخدمون{% endblock %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card-box">
+      <h6 class="fw-bold">إضافة مستخدم</h6>
+      <form method="POST">
+        <div class="mb-2"><input class="form-control" name="username" placeholder="اسم المستخدم" required></div>
+        <div class="mb-2"><input class="form-control" type="password" name="password" placeholder="كلمة المرور" required></div>
+        <div class="mb-2"><input class="form-control" name="full_name" placeholder="الاسم الكامل"></div>
+        <div class="mb-2">
+          <select name="role_id" class="form-select" required>
+            {% for r in roles %}<option value="{{ r.id }}">{{ r.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <button class="btn btn-primary w-100">إضافة</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card-box">
+      <table class="table">
+        <thead><tr><th>#</th><th>المستخدم</th><th>الاسم</th><th>الدور</th><th>الحالة</th><th></th></tr></thead>
+        <tbody>
+        {% for u in items %}
+          <tr>
+            <td>{{ u.id }}</td><td>{{ u.username }}</td><td>{{ u.full_name or '-' }}</td><td>{{ u.role_name }}</td>
+            <td>{% if u.is_active %}<span class="badge bg-success">مفعل</span>{% else %}<span class="badge bg-secondary">موقوف</span>{% endif %}</td>
+            <td><a href="{{ url_for('settings.toggle_user', id=u.id) }}" class="btn btn-sm btn-outline-secondary">تبديل الحالة</a></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
