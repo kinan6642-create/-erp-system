@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block page_title %}دفتر الأستاذ - {{ account.name }}{% endblock %}
+{% block content %}
+<div class="card-box mb-3">
+  <div class="row">
+    <div class="col-md-4"><span class="text-muted small">الحساب</span><div class="fw-bold">{{ account.code }} - {{ account.name }}</div></div>
+    <div class="col-md-4"><span class="text-muted small">الرصيد الحالي</span><div class="fw-bold {% if account.balance and account.balance < 0 %}text-danger{% else %}text-primary{% endif %} fs-5">{{ '%.2f'|format(account.balance or 0) }}</div></div>
+  </div>
+</div>
+<div class="card-box">
+  <table class="table table-sm">
+    <thead><tr><th>التاريخ</th><th>رقم القيد</th><th>البيان</th><th>مدين</th><th>دائن</th><th>الرصيد المتراكم</th></tr></thead>
+    <tbody>
+    {% set ns = namespace(running=0) %}
+    {% for l in lines %}
+      {% set ns.running = ns.running + l.debit - l.credit %}
+      <tr>
+        <td>{{ l.date }}</td>
+        <td><a href="{{ url_for('finance.journal_view', id=l.entry_id) }}">{{ l.number }}</a></td>
+        <td class="small">{{ l.description }}</td>
+        <td>{{ '%.2f'|format(l.debit) if l.debit else '' }}</td>
+        <td>{{ '%.2f'|format(l.credit) if l.credit else '' }}</td>
+        <td class="fw-bold">{{ '%.2f'|format(ns.running) }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6" class="text-center text-muted">لا توجد حركات على هذا الحساب بعد</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
