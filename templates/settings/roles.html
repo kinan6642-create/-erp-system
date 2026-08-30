@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block page_title %}الأدوار والصلاحيات{% endblock %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card-box">
+      <h6 class="fw-bold">إضافة دور</h6>
+      <form method="POST">
+        <div class="mb-2"><input class="form-control" name="name" placeholder="اسم الدور" required></div>
+        <button class="btn btn-primary w-100">إضافة</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card-box">
+      <table class="table">
+        <thead><tr><th>#</th><th>الدور</th><th></th></tr></thead>
+        <tbody>
+        {% for r in items %}
+          <tr><td>{{ r.id }}</td><td>{{ r.name }}</td>
+          <td><a href="{{ url_for('settings.role_permissions', role_id=r.id) }}" class="btn btn-sm btn-outline-primary">تحديد الصلاحيات</a></td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
