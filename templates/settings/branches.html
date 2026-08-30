@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block page_title %}الفروع{% endblock %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card-box">
+      <h6 class="fw-bold">إضافة فرع</h6>
+      <form method="POST">
+        <div class="mb-2"><input class="form-control" name="name" placeholder="اسم الفرع" required></div>
+        <div class="mb-2"><input class="form-control" name="address" placeholder="العنوان"></div>
+        <button class="btn btn-primary w-100">إضافة</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card-box">
+      <table class="table">
+        <thead><tr><th>#</th><th>الاسم</th><th>العنوان</th><th></th></tr></thead>
+        <tbody>
+        {% for b in items %}
+          <tr><td>{{ b.id }}</td><td>{{ b.name }}</td><td>{{ b.address or '-' }}</td>
+          <td><a href="{{ url_for('settings.delete_branch', id=b.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('تأكيد الحذف؟')">حذف</a></td></tr>
+        {% else %}
+          <tr><td colspan="4" class="text-center text-muted">لا توجد فروع بعد</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
