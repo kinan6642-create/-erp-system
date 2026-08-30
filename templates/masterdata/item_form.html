@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block page_title %}تعديل صنف{% endblock %}
+{% block content %}
+<div class="card-box" style="max-width:500px">
+  <form method="POST">
+    <div class="mb-2"><label class="form-label">الاسم</label><input class="form-control" name="name" value="{{ item.name }}" required></div>
+    <div class="mb-2">
+      <label class="form-label">التصنيف</label>
+      <select name="category_id" class="form-select">
+        <option value="">بدون تصنيف</option>
+        {% for c in categories %}<option value="{{ c.id }}" {% if item.category_id==c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">الوحدة</label>
+      <select name="unit_id" class="form-select">
+        <option value="">بدون وحدة</option>
+        {% for u in units %}<option value="{{ u.id }}" {% if item.unit_id==u.id %}selected{% endif %}>{{ u.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="mb-2"><label class="form-label">سعر البيع</label><input class="form-control" type="number" step="0.01" name="sale_price" value="{{ item.sale_price }}"></div>
+    <div class="mb-2"><label class="form-label">حد إعادة الطلب</label><input class="form-control" type="number" step="0.01" name="reorder_level" value="{{ item.reorder_level }}"></div>
+    <div class="mb-2 form-check">
+      <input type="checkbox" class="form-check-input" name="is_active" id="ia" {% if item.is_active %}checked{% endif %}>
+      <label class="form-check-label" for="ia">نشط</label>
+    </div>
+    <p class="text-muted small">تكلفة الصنف الحالية: {{ '%.2f'|format(item.cost_price) }} (تُحدَّث تلقائياً عند الشراء)</p>
+    <button class="btn btn-primary">حفظ</button>
+    <a href="{{ url_for('masterdata.items') }}" class="btn btn-outline-secondary">رجوع</a>
+  </form>
+</div>
+{% endblock %}
