@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block page_title %}الموردون{% endblock %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card-box">
+      <h6 class="fw-bold">إضافة مورد</h6>
+      <form method="POST">
+        <div class="mb-2"><input class="form-control" name="name" placeholder="اسم المورد" required></div>
+        <div class="mb-2"><input class="form-control" name="phone" placeholder="الهاتف"></div>
+        <div class="mb-2"><input class="form-control" name="address" placeholder="العنوان"></div>
+        <div class="mb-2"><label class="form-label small">الرصيد الافتتاحي (لنا عليه دين)</label><input class="form-control" type="number" step="0.01" name="opening_balance" value="0"></div>
+        <button class="btn btn-primary w-100">إضافة</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card-box">
+      <table class="table">
+        <thead><tr><th>الكود</th><th>الاسم</th><th>الهاتف</th><th>الرصيد</th><th></th></tr></thead>
+        <tbody>
+        {% for s in items %}
+          <tr>
+            <td>{{ s.code }}</td><td>{{ s.name }}</td><td>{{ s.phone or '-' }}</td>
+            <td class="{% if s.opening_balance > 0 %}text-danger{% endif %}">{{ '%.2f'|format(s.opening_balance) }}</td>
+            <td>
+              <a href="{{ url_for('masterdata.edit_supplier', id=s.id) }}" class="btn btn-sm btn-outline-secondary">تعديل</a>
+              <a href="{{ url_for('masterdata.supplier_statement', id=s.id) }}" class="btn btn-sm btn-outline-primary">كشف حساب</a>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" class="text-center text-muted">لا يوجد موردون بعد</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
