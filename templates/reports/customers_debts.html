@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block page_title %}ديون العملاء{% endblock %}
+{% block content %}
+<div class="row g-3 mb-3">
+  <div class="col-md-4">
+    <div class="kpi-card">
+      <div class="kpi-label">إجمالي ديون العملاء</div>
+      <div class="kpi-value text-danger">{{ '%.2f'|format(total) }}</div>
+    </div>
+  </div>
+</div>
+<div class="card-box">
+  <table class="table table-hover">
+    <thead><tr><th>الكود</th><th>العميل</th><th>الهاتف</th><th>الرصيد</th><th></th></tr></thead>
+    <tbody>
+    {% for c in rows %}
+      <tr>
+        <td>{{ c.code }}</td><td>{{ c.name }}</td><td>{{ c.phone or '-' }}</td>
+        <td class="{% if c.opening_balance > 0 %}text-danger{% else %}text-success{% endif %} fw-bold">{{ '%.2f'|format(c.opening_balance) }}</td>
+        <td><a href="{{ url_for('masterdata.customer_statement', id=c.id) }}" class="btn btn-sm btn-outline-primary">كشف حساب</a></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="text-center text-muted">لا توجد ديون على العملاء حالياً</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
