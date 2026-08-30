@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block page_title %}تحويل بين الصندوق والبنك{% endblock %}
+{% block content %}
+<div class="row g-3 mb-3">
+  <div class="col-md-3">
+    <div class="kpi-card">
+      <div class="kpi-label">رصيد الصندوق</div>
+      <div class="kpi-value">{{ '%.2f'|format(cash_balance) }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="kpi-card">
+      <div class="kpi-label">رصيد البنك</div>
+      <div class="kpi-value">{{ '%.2f'|format(bank_balance) }}</div>
+    </div>
+  </div>
+</div>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card-box">
+      <h6 class="fw-bold mb-3">تحويل جديد</h6>
+      <form method="POST">
+        <div class="mb-2">
+          <label class="form-label small">التاريخ</label>
+          <input class="form-control" type="date" name="date" value="{{ today }}" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small">اتجاه التحويل</label>
+          <select class="form-select" name="direction" required>
+            <option value="cash_to_bank">من الصندوق إلى البنك</option>
+            <option value="bank_to_cash">من البنك إلى الصندوق</option>
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small">المبلغ</label>
+          <input class="form-control" type="number" step="0.01" name="amount" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small">ملاحظات</label>
+          <textarea class="form-control" name="notes" rows="2"></textarea>
+        </div>
+        <button class="btn btn-primary w-100">تنفيذ التحويل</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card-box">
+      <h6 class="fw-bold mb-2">آخر التحويلات</h6>
+      <table class="table table-sm">
+        <thead><tr><th>الرقم</th><th>التاريخ</th><th>الاتجاه</th><th>المبلغ</th></tr></thead>
+        <tbody>
+        {% for h in history %}
+          <tr>
+            <td>{{ h.number }}</td><td>{{ h.date }}</td>
+            <td>{{ 'صندوق ← بنك' if h.direction=='cash_to_bank' else 'بنك ← صندوق' }}</td>
+            <td>{{ '%.2f'|format(h.amount) }}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="4" class="text-center text-muted">لا توجد تحويلات بعد</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
