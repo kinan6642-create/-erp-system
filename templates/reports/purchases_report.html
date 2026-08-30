@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block page_title %}تقرير المشتريات{% endblock %}
+{% block content %}
+<div class="row g-3 mb-3">
+  <div class="col-md-4">
+    <div class="kpi-card">
+      <div class="kpi-label">إجمالي المشتريات</div>
+      <div class="kpi-value">{{ '%.2f'|format(total) }}</div>
+    </div>
+  </div>
+</div>
+<div class="card-box">
+  <table class="table table-sm">
+    <thead><tr><th>الرقم</th><th>التاريخ</th><th>المورد</th><th>الإجمالي</th><th>نوع الدفع</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.number }}</td><td>{{ r.date }}</td><td>{{ r.supplier_name or '-' }}</td>
+        <td>{{ '%.2f'|format(r.total) }}</td>
+        <td>{{ 'نقدي' if r.payment_type=='cash' else 'آجل' }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="text-center text-muted">لا توجد بيانات مشتريات بعد</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
