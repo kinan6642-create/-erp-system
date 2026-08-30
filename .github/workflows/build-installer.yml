@@ -1,0 +1,61 @@
+name: Build Windows Installer
+
+"on":
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: استنساخ المشروع
+        uses: actions/checkout@v4
+
+      - name: تثبيت Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: تثبيت المتطلبات
+        shell: cmd
+        run: |
+          pip install -r build\requirements_build.txt
+
+      - name: بناء الملف التنفيذي (PyInstaller)
+        shell: cmd
+        run: |
+          pyinstaller --noconfirm --onefile --name "ERP_System" ^
+              --add-data "templates;templates" ^
+              --add-data "static;static" ^
+              --add-data "database;database" ^
+              --hidden-import waitress ^
+              --distpath dist ^
+              --workpath build_output ^
+              launcher.py
+
+      - name: تثبيت Inno Setup
+        shell: cmd
+        run: |
+          choco install innosetup -y --no-progress
+
+      - name: التأكد من توفر ملف اللغة العربية
+        shell: pwsh
+        run: |
+          $langDir = "C:\Program Files (x86)\Inno Setup 6\Languages"
+          $arFile = Join-Path $langDir "Arabic.isl"
+          if (!(Test-Path $arFile)) {
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/jrsoftware/issrc/main/Files/Languages/Arabic.isl" -OutFile $arFile
+          }
+
+      - name: بناء ملف التثبيت setup.exe
+        shell: cmd
+        run: |
+          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "build\installer.iss"
+
+      - name: رفع setup.exe كناتج بناء
+        uses: actions/upload-artifact@v4
+        with:
+          name: ERP_System_Setup
+          path: dist_installer\setup.exe
