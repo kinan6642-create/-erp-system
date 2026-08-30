@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block page_title %}التصنيفات{% endblock %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card-box">
+      <h6 class="fw-bold">إضافة تصنيف</h6>
+      <form method="POST">
+        <div class="mb-2"><input class="form-control" name="name" placeholder="اسم التصنيف" required></div>
+        <button class="btn btn-primary w-100">إضافة</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card-box">
+      <table class="table">
+        <thead><tr><th>الاسم</th><th></th></tr></thead>
+        <tbody>
+        {% for c in items %}
+          <tr><td>{{ c.name }}</td><td><a href="{{ url_for('masterdata.delete_category', id=c.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('تأكيد؟')">حذف</a></td></tr>
+        {% else %}<tr><td colspan="2" class="text-center text-muted">لا يوجد</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
