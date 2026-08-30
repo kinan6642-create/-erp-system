@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block page_title %}أمر إنتاج {{ order.number }}{% endblock %}
+{% block content %}
+<div class="card-box mb-3">
+  <div class="row">
+    <div class="col-md-3"><span class="text-muted small">الرقم</span><div class="fw-bold">{{ order.number }}</div></div>
+    <div class="col-md-3"><span class="text-muted small">التاريخ</span><div class="fw-bold">{{ order.date }}</div></div>
+    <div class="col-md-3"><span class="text-muted small">المنتج</span><div class="fw-bold">{{ order.product_name }}</div></div>
+    <div class="col-md-3"><span class="text-muted small">المستودع</span><div class="fw-bold">{{ order.warehouse_name }}</div></div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-md-3"><span class="text-muted small">الكمية المنتجة</span><div class="fw-bold text-primary fs-5">{{ order.quantity }}</div></div>
+    <div class="col-md-9"><span class="text-muted small">ملاحظات</span><div>{{ order.notes or '-' }}</div></div>
+  </div>
+</div>
+<div class="card-box">
+  <h6 class="fw-bold mb-2">المواد الخام المستهلكة</h6>
+  <table class="table">
+    <thead><tr><th>المادة</th><th>الكمية</th><th>تكلفة الوحدة</th><th>الإجمالي</th></tr></thead>
+    <tbody>
+    {% set ns = namespace(total=0) %}
+    {% for m in materials %}
+      <tr>
+        <td>{{ m.item_name }}</td><td>{{ m.quantity }}</td>
+        <td>{{ '%.2f'|format(m.unit_cost) }}</td>
+        <td>{{ '%.2f'|format(m.quantity * m.unit_cost) }}</td>
+      </tr>
+      {% set ns.total = ns.total + (m.quantity * m.unit_cost) %}
+    {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr class="table-light fw-bold">
+        <td colspan="3" class="text-end">إجمالي تكلفة المواد الخام</td>
+        <td>{{ '%.2f'|format(ns.total) }}</td>
+      </tr>
+      <tr class="table-success fw-bold">
+        <td colspan="3" class="text-end">تكلفة وحدة المنتج النهائي</td>
+        <td>{{ '%.4f'|format(ns.total / order.quantity) if order.quantity else 0 }}</td>
+      </tr>
+    </tfoot>
+  </table>
+  <a href="{{ url_for('production.orders') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-right"></i> رجوع</a>
+</div>
+{% endblock %}
