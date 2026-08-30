@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block page_title %}التدفقات النقدية{% endblock %}
+{% block content %}
+<div class="row g-3 mb-3">
+  <div class="col-md-4">
+    <div class="kpi-card">
+      <div class="kpi-label">إجمالي الداخل</div>
+      <div class="kpi-value text-success">{{ '%.2f'|format(inflow) }}</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="kpi-card">
+      <div class="kpi-label">إجمالي الخارج</div>
+      <div class="kpi-value text-danger">{{ '%.2f'|format(outflow) }}</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="kpi-card">
+      <div class="kpi-label">صافي التدفق</div>
+      <div class="kpi-value {% if net >= 0 %}text-success{% else %}text-danger{% endif %}">{{ '%.2f'|format(net) }}</div>
+    </div>
+  </div>
+</div>
+<div class="card-box">
+  <table class="table table-sm">
+    <thead><tr><th>التاريخ</th><th>البيان</th><th>الحساب</th><th>داخل</th><th>خارج</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.date }}</td><td class="small">{{ r.description }}</td><td>{{ r.account_name }}</td>
+        <td class="text-success">{{ '%.2f'|format(r.debit) if r.debit else '' }}</td>
+        <td class="text-danger">{{ '%.2f'|format(r.credit) if r.credit else '' }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="text-center text-muted">لا توجد حركات نقدية بعد</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
