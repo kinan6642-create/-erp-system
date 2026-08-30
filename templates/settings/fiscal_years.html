@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block page_title %}السنوات المالية{% endblock %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card-box">
+      <h6 class="fw-bold">إضافة سنة مالية</h6>
+      <form method="POST">
+        <div class="mb-2"><input class="form-control" name="name" placeholder="مثال: 2026" required></div>
+        <div class="mb-2"><label class="form-label small">تاريخ البداية</label><input type="date" class="form-control" name="start_date" required></div>
+        <div class="mb-2"><label class="form-label small">تاريخ النهاية</label><input type="date" class="form-control" name="end_date" required></div>
+        <button class="btn btn-primary w-100">إضافة</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card-box">
+      <table class="table">
+        <thead><tr><th>الاسم</th><th>من</th><th>إلى</th><th>الحالة</th><th></th></tr></thead>
+        <tbody>
+        {% for f in items %}
+          <tr>
+            <td>{{ f.name }}</td><td>{{ f.start_date }}</td><td>{{ f.end_date }}</td>
+            <td>{% if f.is_closed %}<span class="badge bg-secondary">مقفلة</span>{% else %}<span class="badge bg-success">مفتوحة</span>{% endif %}</td>
+            <td>{% if not f.is_closed %}<a href="{{ url_for('settings.close_fiscal_year', id=f.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('إقفال السنة المالية نهائي، هل أنت متأكد؟')">إقفال السنة</a>{% endif %}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
