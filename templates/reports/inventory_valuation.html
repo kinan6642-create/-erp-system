@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block page_title %}تقييم المخزون{% endblock %}
+{% block content %}
+<div class="row g-3 mb-3">
+  <div class="col-md-4">
+    <div class="kpi-card">
+      <div class="kpi-label">إجمالي قيمة المخزون</div>
+      <div class="kpi-value">{{ '%.2f'|format(total) }}</div>
+    </div>
+  </div>
+</div>
+<div class="card-box">
+  <table class="table table-sm">
+    <thead><tr><th>الكود</th><th>الصنف</th><th>المستودع</th><th>الكمية</th><th>تكلفة الوحدة</th><th>القيمة</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.code }}</td><td>{{ r.name }}</td><td>{{ r.warehouse_name }}</td>
+        <td>{{ r.quantity }}</td><td>{{ '%.2f'|format(r.cost_price) }}</td>
+        <td class="fw-bold">{{ '%.2f'|format(r.value) }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6" class="text-center text-muted">لا توجد بيانات بعد</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
