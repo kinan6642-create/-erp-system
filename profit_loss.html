@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}الأرباح والخسائر{% endblock %}
+{% block content %}
+<h4 class="mb-3">تقرير الأرباح والخسائر</h4>
+
+<form method="GET" class="mb-3 d-flex gap-2 align-items-end">
+  <div><label class="form-label">من تاريخ</label><input type="date" name="from_date" value="{{ from_date }}" class="form-control"></div>
+  <div><label class="form-label">إلى تاريخ</label><input type="date" name="to_date" value="{{ to_date }}" class="form-control"></div>
+  <button class="btn btn-primary">تحديث</button>
+</form>
+
+<div class="card card-stat p-4" style="max-width:500px;">
+  <table class="table">
+    <tr><td>إجمالي المبيعات</td><td class="text-end fw-bold">{{ "%.2f"|format(sales) }}</td></tr>
+    <tr><td>تكلفة البضاعة المباعة</td><td class="text-end fw-bold text-danger">- {{ "%.2f"|format(cogs) }}</td></tr>
+    <tr class="table-light"><td>مجمل الربح</td><td class="text-end fw-bold">{{ "%.2f"|format(gross_profit) }}</td></tr>
+    <tr><td>المصاريف</td><td class="text-end fw-bold text-danger">- {{ "%.2f"|format(expenses) }}</td></tr>
+    <tr class="{{ 'table-success' if net_profit >= 0 else 'table-danger' }}">
+      <td class="fw-bold">صافي الربح / الخسارة</td>
+      <td class="text-end fw-bold fs-5">{{ "%.2f"|format(net_profit) }}</td>
+    </tr>
+  </table>
+</div>
+{% endblock %}

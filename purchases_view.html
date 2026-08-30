@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}فاتورة شراء{% endblock %}
+{% block content %}
+<a href="{{ url_for('purchases_list') }}" class="btn btn-sm btn-outline-secondary mb-3">&rarr; رجوع</a>
+<div class="card card-stat p-4">
+  <div class="d-flex justify-content-between">
+    <h4>فاتورة شراء: {{ invoice.invoice_no }}</h4>
+    <span class="badge {{ 'bg-success' if invoice.payment_type == 'cash' else 'bg-warning' }}">{{ 'نقدي' if invoice.payment_type == 'cash' else 'آجل' }}</span>
+  </div>
+  <p class="text-muted">التاريخ: {{ invoice.invoice_date }} | المورد: {{ invoice.supplier_name or 'نقدي' }}</p>
+
+  <table class="table table-sm">
+    <thead><tr><th>الصنف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead>
+    <tbody>
+    {% for l in lines %}
+      <tr><td>{{ l.item_name }}</td><td>{{ l.qty }} {{ l.unit }}</td><td>{{ "%.2f"|format(l.price) }}</td><td>{{ "%.2f"|format(l.total) }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <h5 class="text-end">الإجمالي: {{ "%.2f"|format(invoice.total) }}</h5>
+  {% if invoice.notes %}<p class="text-muted">ملاحظات: {{ invoice.notes }}</p>{% endif %}
+</div>
+{% endblock %}

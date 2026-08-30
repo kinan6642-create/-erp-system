@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}دفتر الأستاذ{% endblock %}
+{% block content %}
+<h4 class="mb-3">دفتر الأستاذ</h4>
+
+<form method="GET" class="mb-3 d-flex gap-2">
+  <select name="account_id" class="form-select w-auto" onchange="this.form.submit()">
+    <option value="">-- اختر حساب --</option>
+    {% for a in accounts %}
+      <option value="{{ a.id }}" {{ 'selected' if selected and selected.id == a.id else '' }}>{{ a.code }} - {{ a.name }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+{% if selected %}
+<div class="card card-stat p-3">
+  <h5>{{ selected.name }} — الرصيد الحالي: {{ "%.2f"|format(selected.balance) }}</h5>
+  <table class="table table-hover">
+    <thead><tr><th>التاريخ</th><th>البيان</th><th>مدين</th><th>دائن</th><th>الرصيد المتراكم</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.entry_date }}</td>
+        <td>{{ r.description }}</td>
+        <td>{{ "%.2f"|format(r.debit) if r.debit else '-' }}</td>
+        <td>{{ "%.2f"|format(r.credit) if r.credit else '-' }}</td>
+        <td>{{ "%.2f"|format(r.running) }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="text-center text-muted">لا توجد حركات لهذا الحساب</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

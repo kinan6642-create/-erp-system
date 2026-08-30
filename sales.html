@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}المبيعات{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>فواتير المبيعات</h4>
+  <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addModal"><i class="bi bi-plus"></i> فاتورة بيع جديدة</button>
+</div>
+
+<div class="card card-stat p-3">
+  <table class="table table-hover">
+    <thead><tr><th>رقم الفاتورة</th><th>التاريخ</th><th>العميل</th><th>نوع الدفع</th><th>الإجمالي</th><th></th></tr></thead>
+    <tbody>
+    {% for inv in invoices %}
+      <tr>
+        <td>{{ inv.invoice_no }}</td>
+        <td>{{ inv.invoice_date }}</td>
+        <td>{{ inv.customer_name or 'نقدي' }}</td>
+        <td>{{ 'نقدي' if inv.payment_type == 'cash' else 'آجل' }}</td>
+        <td>{{ "%.2f"|format(inv.total) }}</td>
+        <td><a href="{{ url_for('sales_view', iid=inv.id) }}" class="btn btn-sm btn-outline-secondary">عرض</a></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6" class="text-center text-muted">لا توجد فواتير بعد</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="modal fade" id="addModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form method="POST" action="{{ url_for('sales_add') }}" id="saleForm">
+        <div class="modal-header"><h5 class="modal-title">فاتورة بيع جديدة</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-4 mb-2">
+              <label class="form-label">التاريخ</label>
+              <input type="date" name="invoice_date" class="form-control" value="{{ today }}" required>
+            </div>
+            <div class="col-md-4 mb-2">
+              <label class="form-label">نوع الدفع</label>
+              <select name="payment_type" class="form-select" id="paymentType" onchange="toggleCustomer()">
+                <option value="cash">نقدي</option>
+                <option value="credit">آجل</option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-2" id="customerDiv" style="display:none;">
+              <label class="form-label">العميل</label>
+              <select name="customer_id" class="form-select">
+                <option value="">-- اختر --</option>
+                {% for c in customers %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <table class="table table-sm" id="itemsTable">
+            <thead><tr><th>الصنف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <button type="button" class="btn btn-sm btn-outline-primary" onclick="addRow()"><i class="bi bi-plus"></i> إضافة صنف</button>
+
+          <div class="mb-2 mt-3">
+            <label class="form-label">ملاحظات</label>
+            <input name="notes" class="form-control">
+          </div>
+          <h5 class="text-end">الإجمالي: <span id="grandTotal">0.00</span></h5>
+        </div>
+        <div class="modal-footer"><button class="btn btn-primary">حفظ الفاتورة</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+const ITEMS = [
+  {% for it in items %}{ id: {{ it.id }}, name: "{{ it.name|e }}", price: {{ it.sale_price }}, qty: {{ it.quantity }} },{% endfor %}
+];
+
+function toggleCustomer() {
+  document.getElementById('customerDiv').style.display = document.getElementById('paymentType').value === 'credit' ? 'block' : 'none';
+}
+
+function addRow() {
+  const tbody = document.querySelector('#itemsTable tbody');
+  const tr = document.createElement('tr');
+  let options = '<option value="">-- اختر صنف --</option>';
+  ITEMS.forEach(it => options += `<option value="${it.id}" data-price="${it.price}" data-stock="${it.qty}">${it.name} (متاح: ${it.qty})</option>`);
+  tr.innerHTML = `
+    <td><select class="form-select form-select-sm" name="item_id[]" onchange="rowChanged(this)">${options}</select></td>
+    <td><input type="number" step="0.01" class="form-control form-control-sm" name="qty[]" value="1" onchange="rowChanged(this)"></td>
+    <td><input type="number" step="0.01" class="form-control form-control-sm" name="price[]" value="0" onchange="rowChanged(this)"></td>
+    <td class="rowTotal">0.00</td>
+    <td><button type="button" class="btn btn-sm btn-outline-danger" onclick="this.closest('tr').remove(); calcTotal();">&times;</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function rowChanged(el) {
+  const tr = el.closest('tr');
+  const select = tr.querySelector('select');
+  const priceInput = tr.querySelector('input[name="price[]"]');
+  const qtyInput = tr.querySelector('input[name="qty[]"]');
+  if (select.value && el.tagName === 'SELECT') {
+    const opt = select.selectedOptions[0];
+    priceInput.value = opt.dataset.price;
+  }
+  const total = (parseFloat(qtyInput.value) || 0) * (parseFloat(priceInput.value) || 0);
+  tr.querySelector('.rowTotal').innerText = total.toFixed(2);
+  calcTotal();
+}
+
+function calcTotal() {
+  let sum = 0;
+  document.querySelectorAll('.rowTotal').forEach(td => sum += parseFloat(td.innerText) || 0);
+  document.getElementById('grandTotal').innerText = sum.toFixed(2);
+}
+
+document.getElementById('addModal').addEventListener('shown.bs.modal', () => {
+  document.querySelector('#itemsTable tbody').innerHTML = '';
+  addRow();
+});
+</script>
+{% endblock %}

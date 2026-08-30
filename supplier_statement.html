@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}كشف حساب مورد{% endblock %}
+{% block content %}
+<a href="{{ url_for('suppliers_list') }}" class="btn btn-sm btn-outline-secondary mb-3">&rarr; رجوع</a>
+<h4>كشف حساب المورد: {{ supplier.name }}</h4>
+<p class="text-muted">الرصيد الحالي: <b class="{{ 'text-danger' if supplier.balance > 0 else 'text-success' }}">{{ "%.2f"|format(supplier.balance) }}</b></p>
+
+<div class="card card-stat p-3">
+  <table class="table table-hover">
+    <thead><tr><th>التاريخ</th><th>البيان</th><th>مدين (دفعنا)</th><th>دائن (مستحق)</th><th>الرصيد</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.date }}</td>
+        <td>{{ r.desc }}</td>
+        <td>{{ "%.2f"|format(r.debit) if r.debit else '-' }}</td>
+        <td>{{ "%.2f"|format(r.credit) if r.credit else '-' }}</td>
+        <td>{{ "%.2f"|format(r.balance) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

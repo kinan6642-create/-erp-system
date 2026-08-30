@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}تقرير المخزون{% endblock %}
+{% block content %}
+<h4 class="mb-3">تقرير قيمة المخزون</h4>
+<div class="card card-stat p-3">
+  <table class="table table-hover">
+    <thead><tr><th>الكود</th><th>الصنف</th><th>الكمية</th><th>سعر التكلفة</th><th>القيمة الإجمالية</th></tr></thead>
+    <tbody>
+    {% for it in items %}
+      <tr>
+        <td>{{ it.code }}</td>
+        <td>{{ it.name }}</td>
+        <td>{{ it.quantity }} {{ it.unit }}</td>
+        <td>{{ "%.2f"|format(it.cost_price) }}</td>
+        <td>{{ "%.2f"|format(it.quantity * it.cost_price) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr class="fw-bold"><td colspan="4">إجمالي قيمة المخزون</td><td>{{ "%.2f"|format(total_value) }}</td></tr>
+    </tfoot>
+  </table>
+</div>
+{% endblock %}
