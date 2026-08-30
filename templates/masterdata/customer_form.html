@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block page_title %}تعديل عميل{% endblock %}
+{% block content %}
+<div class="card-box" style="max-width:500px">
+  <form method="POST">
+    <div class="mb-2"><label class="form-label">الاسم</label><input class="form-control" name="name" value="{{ item.name }}" required></div>
+    <div class="mb-2"><label class="form-label">الهاتف</label><input class="form-control" name="phone" value="{{ item.phone or '' }}"></div>
+    <div class="mb-2"><label class="form-label">العنوان</label><input class="form-control" name="address" value="{{ item.address or '' }}"></div>
+    <div class="mb-2"><label class="form-label">حد الائتمان</label><input class="form-control" type="number" step="0.01" name="credit_limit" value="{{ item.credit_limit }}"></div>
+    <div class="mb-2 form-check">
+      <input type="checkbox" class="form-check-input" name="is_active" id="ia" {% if item.is_active %}checked{% endif %}>
+      <label class="form-check-label" for="ia">نشط</label>
+    </div>
+    <button class="btn btn-primary">حفظ</button>
+    <a href="{{ url_for('masterdata.customers') }}" class="btn btn-outline-secondary">رجوع</a>
+  </form>
+</div>
+{% endblock %}
