@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block page_title %}تنبيهات نقص المخزون{% endblock %}
+{% block content %}
+<div class="card-box">
+  <table class="table table-hover">
+    <thead><tr><th>الكود</th><th>الصنف</th><th>الكمية الحالية</th><th>حد إعادة الطلب</th></tr></thead>
+    <tbody>
+    {% for i in items %}
+      <tr class="table-warning">
+        <td>{{ i.code }}</td><td>{{ i.name }}</td>
+        <td class="fw-bold text-danger">{{ i.total_qty }}</td>
+        <td>{{ i.reorder_level }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4" class="text-center text-muted">لا توجد أصناف تحت حد إعادة الطلب حالياً</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
