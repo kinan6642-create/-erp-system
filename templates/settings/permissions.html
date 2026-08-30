@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block page_title %}صلاحيات: {{ role.name }}{% endblock %}
+{% block content %}
+<div class="card-box">
+  <form method="POST">
+    <div class="table-responsive">
+      <table class="table table-bordered text-center">
+        <thead>
+          <tr><th>الوحدة</th><th>عرض</th><th>إضافة</th><th>تعديل</th><th>حذف</th></tr>
+        </thead>
+        <tbody>
+        {% for code, label in modules %}
+          {% set p = perms.get(code) %}
+          <tr>
+            <td class="text-end">{{ label }}</td>
+            <td><input type="checkbox" class="form-check-input" name="{{ code }}_view" {% if p and p.can_view %}checked{% endif %}></td>
+            <td><input type="checkbox" class="form-check-input" name="{{ code }}_add" {% if p and p.can_add %}checked{% endif %}></td>
+            <td><input type="checkbox" class="form-check-input" name="{{ code }}_edit" {% if p and p.can_edit %}checked{% endif %}></td>
+            <td><input type="checkbox" class="form-check-input" name="{{ code }}_delete" {% if p and p.can_delete %}checked{% endif %}></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <button class="btn btn-primary">حفظ الصلاحيات</button>
+  </form>
+</div>
+{% endblock %}
