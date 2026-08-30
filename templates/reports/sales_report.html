@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block page_title %}تقرير المبيعات{% endblock %}
+{% block content %}
+<div class="row g-3 mb-3">
+  <div class="col-md-4">
+    <div class="kpi-card">
+      <div class="kpi-label">إجمالي المبيعات</div>
+      <div class="kpi-value">{{ '%.2f'|format(total_sales) }}</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="kpi-card">
+      <div class="kpi-label">إجمالي الأرباح</div>
+      <div class="kpi-value text-success">{{ '%.2f'|format(total_profit) }}</div>
+    </div>
+  </div>
+</div>
+<div class="card-box">
+  <table class="table table-sm">
+    <thead><tr><th>الرقم</th><th>التاريخ</th><th>العميل</th><th>الإجمالي</th><th>التكلفة</th><th>الربح</th><th>نوع الدفع</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.number }}</td><td>{{ r.date }}</td><td>{{ r.customer_name or 'عميل نقدي' }}</td>
+        <td>{{ '%.2f'|format(r.total) }}</td><td>{{ '%.2f'|format(r.cost_total) }}</td>
+        <td class="text-success fw-bold">{{ '%.2f'|format(r.profit) }}</td>
+        <td>{{ 'نقدي' if r.payment_type=='cash' else 'آجل' }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="7" class="text-center text-muted">لا توجد بيانات مبيعات بعد</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
