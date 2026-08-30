@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block page_title %}فاتورة بيع {{ invoice.number }}{% endblock %}
+{% block content %}
+<div class="card-box mb-3">
+  <div class="row">
+    <div class="col-md-3"><span class="text-muted small">رقم الفاتورة</span><div class="fw-bold">{{ invoice.number }}</div></div>
+    <div class="col-md-3"><span class="text-muted small">التاريخ</span><div class="fw-bold">{{ invoice.date }}</div></div>
+    <div class="col-md-3"><span class="text-muted small">العميل</span><div class="fw-bold">{{ invoice.customer_name or 'عميل نقدي' }}</div></div>
+    <div class="col-md-3"><span class="text-muted small">المستودع</span><div class="fw-bold">{{ invoice.warehouse_name }}</div></div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-md-3"><span class="text-muted small">نوع الدفع</span><div class="fw-bold">{{ 'نقدي' if invoice.payment_type=='cash' else 'آجل' }}</div></div>
+    <div class="col-md-3"><span class="text-muted small">الخصم</span><div class="fw-bold">{{ '%.2f'|format(invoice.discount) }}</div></div>
+    <div class="col-md-3"><span class="text-muted small">الضريبة</span><div class="fw-bold">{{ '%.2f'|format(invoice.tax_total) }}</div></div>
+    <div class="col-md-3"><span class="text-muted small">الإجمالي</span><div class="fw-bold text-primary fs-5">{{ '%.2f'|format(invoice.total) }}</div></div>
+  </div>
+</div>
+
+<div class="card-box">
+  <table class="table">
+    <thead><tr><th>الكود</th><th>الصنف</th><th>الكمية</th><th>السعر</th><th>التكلفة</th><th>الإجمالي</th></tr></thead>
+    <tbody>
+    {% for it in items %}
+      <tr>
+        <td>{{ it.code }}</td><td>{{ it.item_name }}</td><td>{{ it.quantity }}</td>
+        <td>{{ '%.2f'|format(it.price) }}</td><td>{{ '%.2f'|format(it.cost_price) }}</td>
+        <td>{{ '%.2f'|format(it.total) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr class="table-light fw-bold">
+        <td colspan="5" class="text-end">إجمالي تكلفة البضاعة</td>
+        <td>{{ '%.2f'|format(invoice.cost_total) }}</td>
+      </tr>
+      <tr class="table-success fw-bold">
+        <td colspan="5" class="text-end">صافي الربح</td>
+        <td>{{ '%.2f'|format(invoice.total - invoice.cost_total) }}</td>
+      </tr>
+    </tfoot>
+  </table>
+  <a href="{{ url_for('sales.invoices') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-right"></i> رجوع لقائمة الفواتير</a>
+</div>
+{% endblock %}
